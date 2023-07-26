@@ -71,8 +71,8 @@ public class BigQueryConnection implements Connection {
 		return false;
 	}
 
-	public org.finos.legend.engine.bigquery.Statement createStatement() throws SQLException {
-		return new org.finos.legend.engine.bigquery.Statement(bigQuery);
+	public Statement createStatement() throws SQLException {
+		return (Statement) bigQuery;
 	}
 
 	public PreparedStatement prepareStatement(String sql) throws SQLException {

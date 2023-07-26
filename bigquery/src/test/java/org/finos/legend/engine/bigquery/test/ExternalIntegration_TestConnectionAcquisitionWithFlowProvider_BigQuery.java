@@ -3,7 +3,9 @@ package org.finos.legend.engine.bigquery.test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import org.finos.legend.engine.bigquery.Connection;
+import java.sql.Connection;
+
+import org.finos.legend.engine.bigquery.BigQueryConnection;
 import org.finos.legend.engine.bigquery.connection.test.BigQueryConnectionTest;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -63,7 +65,7 @@ public class ExternalIntegration_TestConnectionAcquisitionWithFlowProvider_BigQu
 	
 	@Test
 	public void testBigQueryGCPADCConnection_subject() {
-		Connection connection = new Connection(PROJECT_ID);
+		Connection connection = new BigQueryConnection(PROJECT_ID);
 		testConnection(connection, 1, "select * from `crmsm-278014.testlegendEngine.game_post_wide`");
 	}
 

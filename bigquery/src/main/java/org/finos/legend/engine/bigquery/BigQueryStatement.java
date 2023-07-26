@@ -33,7 +33,7 @@ public class BigQueryStatement implements Statement {
 		return false;
 	}
 
-	public org.finos.legend.engine.bigquery.ResultSet executeQuery(String sql) throws SQLException {
+	public ResultSet executeQuery(String sql) throws SQLException {
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(sql).setUseLegacySql(false).build();
 		JobId jobId = JobId.of(UUID.randomUUID().toString());
 		Job queryJob = bigQuery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());
@@ -55,7 +55,7 @@ public class BigQueryStatement implements Statement {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		return new org.finos.legend.engine.bigquery.ResultSet(result);
+		return (ResultSet) result;
 	}
 
 	public int executeUpdate(String sql) throws SQLException {

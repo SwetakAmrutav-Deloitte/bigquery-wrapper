@@ -1,6 +1,6 @@
 package org.finos.legend.engine.bigquery.connection.test;
 
-import org.finos.legend.engine.bigquery.Connection;
+import java.sql.Connection;
 
 public class BigQueryConnectionTest {
 
