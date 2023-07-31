@@ -37,10 +37,11 @@ import com.google.cloud.bigquery.Dataset;
 public class BigQueryConnection implements Connection {
 
 	public static final String GOOGLE_APPLICATION_CREDENTIALS = "GOOGLE_APPLICATION_CREDENTIALS";
-	private static final String DATASET_ID = "testlegendEngine";
+	//private static final String PROJECT_ID = "crmsm-278014";
+	//private static final String DATASET_ID = "testlegendEngine";
 	private final BigQuery bigQuery;
 	
-	public BigQueryConnection(String projectId) {
+	public BigQueryConnection(String projectId, String datasetId) {
 		String googleApplicationCredentials = System.getenv(GOOGLE_APPLICATION_CREDENTIALS);
 		File credentialsPath = new File(googleApplicationCredentials);
 		GoogleCredentials credentials = null;
@@ -52,12 +53,12 @@ public class BigQueryConnection implements Connection {
 		}
 		bigQuery = BigQueryOptions.newBuilder().setProjectId(projectId).setCredentials(credentials).build().getService();
 		
-		Dataset dataset = bigQuery.getDataset(DATASET_ID);
+		Dataset dataset = bigQuery.getDataset(datasetId);
 		if (dataset == null) {
 			System.out.println("Dataset not found.");
 			return;
 		} else {
-			System.out.println("Connected to Dataset: " + DATASET_ID);
+			System.out.println("Connected to Dataset: " + datasetId);
 		}
 	}
 	
@@ -72,7 +73,7 @@ public class BigQueryConnection implements Connection {
 	}
 
 	public Statement createStatement() throws SQLException {
-		return (Statement) bigQuery;
+		return new BigQueryStatement(bigQuery);
 	}
 
 	public PreparedStatement prepareStatement(String sql) throws SQLException {

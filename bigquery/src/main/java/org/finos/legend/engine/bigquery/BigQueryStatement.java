@@ -55,7 +55,7 @@ public class BigQueryStatement implements Statement {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		return (ResultSet) result;
+		return new BigQueryResultSet(result);
 	}
 
 	public int executeUpdate(String sql) throws SQLException {

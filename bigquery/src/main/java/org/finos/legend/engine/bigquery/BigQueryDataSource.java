@@ -19,6 +19,25 @@ public class BigQueryDataSource implements DataSource {
 					"BigQueryDataSource failed to load org.finos.legend.engine.bigquery.BigQueryDriver", e);
 		}
 	}
+	
+	private String projectId;
+	private String datasetId;
+
+	public String getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
+	}
+
+	public String getDatasetId() {
+		return datasetId;
+	}
+
+	public void setDatasetId(String datasetId) {
+		this.datasetId = datasetId;
+	}
 
 	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
 		// TODO Auto-generated method stub
@@ -36,7 +55,7 @@ public class BigQueryDataSource implements DataSource {
 	}
 
 	public Connection getConnection() throws SQLException {
-		return new BigQueryConnection(null);
+		return new BigQueryConnection(projectId, datasetId);
 	}
 
 	public Connection getConnection(String username, String password) throws SQLException {

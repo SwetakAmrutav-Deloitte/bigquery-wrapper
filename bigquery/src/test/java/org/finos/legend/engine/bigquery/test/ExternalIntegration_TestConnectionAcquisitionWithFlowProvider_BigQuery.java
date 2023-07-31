@@ -24,6 +24,7 @@ public class ExternalIntegration_TestConnectionAcquisitionWithFlowProvider_BigQu
     private ExternalIntegration_TestConnectionAcquisitionWithFlowProvider_BigQuery connection;
     public static final String GOOGLE_APPLICATION_CREDENTIALS = "GOOGLE_APPLICATION_CREDENTIALS";
     private static final String PROJECT_ID = "crmsm-278014";
+    private static final String DATASET_ID = "testlegendEngine";
     private static final String DEFAULT_TEST_DATASET = "bigquery_test_dataset";
     private static final int DEFAULT_PAGE_SIZE = 10000;
     
@@ -65,7 +66,7 @@ public class ExternalIntegration_TestConnectionAcquisitionWithFlowProvider_BigQu
 	
 	@Test
 	public void testBigQueryGCPADCConnection_subject() {
-		Connection connection = new BigQueryConnection(PROJECT_ID);
+		Connection connection = new BigQueryConnection(PROJECT_ID, DATASET_ID);
 		testConnection(connection, 1, "select * from `crmsm-278014.testlegendEngine.game_post_wide`");
 	}
 
