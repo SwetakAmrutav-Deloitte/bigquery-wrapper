@@ -1,4 +1,4 @@
-package org.finos.legend.engine.bigquery.connection.test;
+package com.deloitte.legend.engine.bigquery.connection.test;
 
 import java.sql.Connection;
 

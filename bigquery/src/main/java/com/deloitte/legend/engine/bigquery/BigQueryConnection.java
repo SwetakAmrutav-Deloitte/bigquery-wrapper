@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.finos.legend.engine.bigquery;
+package com.deloitte.legend.engine.bigquery;
 
 import java.io.File;
 import java.io.FileInputStream;

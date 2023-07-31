@@ -1,4 +1,4 @@
-package org.finos.legend.engine.bigquery;
+package com.deloitte.legend.engine.bigquery;
 
 import java.io.InputStream;
 import java.io.Reader;

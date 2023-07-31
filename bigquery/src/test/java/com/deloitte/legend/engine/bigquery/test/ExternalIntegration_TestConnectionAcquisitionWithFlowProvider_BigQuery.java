@@ -1,16 +1,16 @@
-package org.finos.legend.engine.bigquery.test;
+package com.deloitte.legend.engine.bigquery.test;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 
-import org.finos.legend.engine.bigquery.BigQueryConnection;
-import org.finos.legend.engine.bigquery.connection.test.BigQueryConnectionTest;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.deloitte.legend.engine.bigquery.BigQueryConnection;
+import com.deloitte.legend.engine.bigquery.connection.test.BigQueryConnectionTest;
 import com.google.cloud.ServiceOptions;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;

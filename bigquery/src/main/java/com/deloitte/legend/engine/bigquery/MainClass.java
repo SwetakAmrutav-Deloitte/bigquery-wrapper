@@ -1,4 +1,4 @@
-package org.finos.legend.engine.bigquery;
+package com.deloitte.legend.engine.bigquery;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -11,7 +11,7 @@ public class MainClass {
 	
 	public static void main(String[] args) {
 		try {
-			Class.forName("org.finos.legend.engine.bigquery.BigQueryDriver");
+			Class.forName("com.deloitte.legend.engine.bigquery.BigQueryDriver");
 			//Connection connection = DriverManager.getConnection(PROJECT_ID);
 			Connection connection = new BigQueryConnection(PROJECT_ID, DATASET_ID);
 			Statement statement = connection.createStatement();
