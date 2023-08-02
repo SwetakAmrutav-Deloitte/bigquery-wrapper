@@ -76,7 +76,7 @@ public class BigQueryDriver implements Driver {
 	public Connection connect(String url, Properties info) throws SQLException {
 		System.out.println("Inside Wrapper Driver");
 		String projectId = info.getProperty("PROJECT_ID");
-		String datasetId = info.getProperty("PROJECT_ID");
+		String datasetId = info.getProperty("DATASET_ID");
 		if (url != null && url.startsWith("jdbc:bigquery")) {
 			try {
 				Matcher matcher = URL_PATTERN.matcher(url);
