@@ -22,6 +22,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
 
+import com.google.cloud.bigquery.BigQueryResultImpl;
 import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.TableResult;
 
@@ -44,7 +45,6 @@ public class BigQueryResultSet implements ResultSet {
 	}
 
 	public boolean next() throws SQLException {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

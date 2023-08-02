@@ -13,7 +13,7 @@ public class BigQueryDataSource implements DataSource {
 	// Make sure the JDBC driver class is loaded.
 	static {
 		try {
-			Class.forName("org.finos.legend.engine.bigquery.BigQueryDriver");
+			Class.forName("com.deloitte.legend.engine.bigquery.BigQueryDriver");
 		} catch (ClassNotFoundException e) {
 			throw new IllegalStateException(
 					"BigQueryDataSource failed to load org.finos.legend.engine.bigquery.BigQueryDriver", e);

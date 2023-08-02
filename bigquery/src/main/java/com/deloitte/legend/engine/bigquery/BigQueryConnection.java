@@ -37,8 +37,6 @@ import com.google.cloud.bigquery.Dataset;
 public class BigQueryConnection implements Connection {
 
 	public static final String GOOGLE_APPLICATION_CREDENTIALS = "GOOGLE_APPLICATION_CREDENTIALS";
-	//private static final String PROJECT_ID = "crmsm-278014";
-	//private static final String DATASET_ID = "testlegendEngine";
 	private final BigQuery bigQuery;
 	
 	public BigQueryConnection(String projectId, String datasetId) {
