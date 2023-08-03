@@ -75,8 +75,8 @@ public class BigQueryDriver implements Driver {
 
 	public Connection connect(String url, Properties info) throws SQLException {
 		System.out.println("Inside Wrapper Driver");
-		String projectId = info.getProperty("PROJECT_ID");
-		String datasetId = info.getProperty("DATASET_ID");
+		String projectId = info.getProperty("bigquery_projectId");
+		String datasetId = info.getProperty("bigquery_defaultDataset");
 		if (url != null && url.startsWith("jdbc:bigquery")) {
 			try {
 				Matcher matcher = URL_PATTERN.matcher(url);
@@ -87,8 +87,12 @@ public class BigQueryDriver implements Driver {
 			} catch (Exception e) {
 				System.out.println("Invalid URL: " + e.getMessage());
 			}
-			System.out.println("PROJECT_ID: " + info.getProperty("PROJECT_ID"));
-			System.out.println("DATASET_ID: " + info.getProperty("DATASET_ID"));
+
+			System.out.println("Project ID from Properties: " + projectId);
+			System.out.println("Dataset ID from Properties: " + datasetId);
+			
+			//info.forEach((key, val) -> System.out.println(key + " = " + val));
+
 			return new BigQueryConnection(projectId, datasetId);
 		}
 		return new BigQueryConnection(projectId, datasetId);
