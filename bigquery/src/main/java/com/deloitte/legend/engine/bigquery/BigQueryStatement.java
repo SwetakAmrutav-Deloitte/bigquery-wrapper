@@ -12,8 +12,11 @@ import com.google.cloud.bigquery.Job;
 import com.google.cloud.bigquery.JobException;
 import com.google.cloud.bigquery.JobId;
 import com.google.cloud.bigquery.JobInfo;
+import com.google.cloud.bigquery.JobStatistics;
 import com.google.cloud.bigquery.QueryJobConfiguration;
 import com.google.cloud.bigquery.TableResult;
+import com.google.cloud.bigquery.JobStatistics.QueryStatistics;
+import com.google.cloud.bigquery.JobStatistics.SessionInfo;
 
 public class BigQueryStatement implements Statement {
 

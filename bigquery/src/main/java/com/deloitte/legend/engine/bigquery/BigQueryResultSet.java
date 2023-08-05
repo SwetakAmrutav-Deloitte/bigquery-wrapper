@@ -19,19 +19,29 @@ import java.sql.SQLXML;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.Map;
 
-import com.google.cloud.bigquery.BigQueryResultImpl;
 import com.google.cloud.bigquery.FieldValueList;
 import com.google.cloud.bigquery.TableResult;
 
 public class BigQueryResultSet implements ResultSet {
 
-	public final TableResult result;
-	
-	public BigQueryResultSet(TableResult result) {
-		this.result = result;
+	private final TableResult tableResult;
+	private int currentRow = -1;
+	private final Iterator<FieldValueList> rowList;
+	ArrayList<FieldValueList> arrayList = new ArrayList<>();
+	private final long totalRows;
+
+	public BigQueryResultSet(TableResult tableResult) {
+		this.tableResult = tableResult;
+		totalRows = tableResult.getTotalRows();
+		rowList = tableResult.getValues().iterator();
+		while (rowList.hasNext()) {
+			arrayList.add(rowList.next());
+		}
 	}
 
 	public <T> T unwrap(Class<T> iface) throws SQLException {
@@ -45,6 +55,10 @@ public class BigQueryResultSet implements ResultSet {
 	}
 
 	public boolean next() throws SQLException {
+		currentRow++;
+		if (!arrayList.isEmpty() && currentRow < tableResult.getTotalRows()) {
+			return true;
+		}
 		return false;
 	}
 
@@ -59,8 +73,11 @@ public class BigQueryResultSet implements ResultSet {
 	}
 
 	public String getString(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		String columnValue = null;
+		if (columnIndex < totalRows) {
+			columnValue = arrayList.get(currentRow).get(columnIndex).getStringValue();
+		}
+		return columnValue;
 	}
 
 	public boolean getBoolean(int columnIndex) throws SQLException {
@@ -140,8 +157,8 @@ public class BigQueryResultSet implements ResultSet {
 
 	public String getString(String columnLabel) throws SQLException {
 		String columnValue = null;
-		for (FieldValueList row : result.iterateAll()) {
-			columnValue = row.get("gameId").getStringValue();
+		if (columnLabel != null) {
+			columnValue = arrayList.get(currentRow).get(columnLabel).getStringValue();
 		}
 		return columnValue;
 	}

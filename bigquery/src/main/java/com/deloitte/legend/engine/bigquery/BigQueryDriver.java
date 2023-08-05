@@ -20,14 +20,9 @@ public class BigQueryDriver implements Driver {
 			java.sql.DriverManager.println("Registering driver failed: " + e.getMessage());
 		}
 	}
-
-	private static final String BIGQUERY_URI_FORMAT = "(?:bigquery:)(?<HOSTGROUP>//[\\w.-]+(?:\\.[\\w\\.-]+)*[\\w\\-\\._~:/?#\\[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?/projects/(?<PROJECTGROUP>(([a-z]|[-.:]|[0-9])+|(DEFAULT_PROJECT_ID)))(/instances/(?<INSTANCEGROUP>([a-z]|[-]|[0-9])+)(/databases/(?<DATABASEGROUP>([a-z]|[-]|[_]|[0-9])+))?)?(?:[?|;].*)?";
-
-	private static final String BIGQUERY_URI_REGEX = "(?is)^" + BIGQUERY_URI_FORMAT + "$";
-	private static final Pattern BIGQUERY_URI_PATTERN = Pattern.compile(BIGQUERY_URI_REGEX);
-
-	private static final String JDBC_URL_FORMAT = "jdbc:" + BIGQUERY_URI_FORMAT;
-	private static final Pattern URL_PATTERN = Pattern.compile(JDBC_URL_FORMAT);
+	
+	private static final String BIGQUERY_URI_FORMAT = "jdbc:bigquery:(?<HOSTGROUP>https?://[\\w.-]+(?:\\.[\\w.-]+)*(:\\d+)?(?:/.*)?);ProjectId=(?<ProjectId>[a-zA-Z0-9-]+);DefaultDataset=(?<DefaultDataset>[a-zA-Z0-9]+)(?:;.*)?";
+	private static final Pattern URL_PATTERN = Pattern.compile(BIGQUERY_URI_FORMAT);
 
 	private static BigQueryDriver registeredDriver;
 
@@ -52,7 +47,7 @@ public class BigQueryDriver implements Driver {
 	}
 
 	private boolean isValidUri(String uri) {
-		return BIGQUERY_URI_PATTERN.matcher(uri).matches();
+		return URL_PATTERN.matcher(uri).matches();
 	}
 
 	private String projectId;
