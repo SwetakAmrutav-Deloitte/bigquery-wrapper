@@ -3,8 +3,6 @@ package com.deloitte.legend.engine.bigquery;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
@@ -23,7 +21,8 @@ public class MainClass {
 			Statement statement = connection.createStatement();
 			String sql = "SELECT * FROM crmsm-278014.testlegendEngine.game_post_wide limit 60";
 			ResultSet resultSet = statement.executeQuery(sql);
-
+			System.out.println("Column Count: " + resultSet.getMetaData().getColumnCount());
+			
 			int index = 8; 
 			while (resultSet.next()) {
 				String value = resultSet.getString(index);

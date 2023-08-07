@@ -46,10 +46,6 @@ public class BigQueryDriver implements Driver {
 		throw new SQLException("The driver has not been registered");
 	}
 
-	private boolean isValidUri(String uri) {
-		return URL_PATTERN.matcher(uri).matches();
-	}
-
 	private String projectId;
 	private String datasetId;
 

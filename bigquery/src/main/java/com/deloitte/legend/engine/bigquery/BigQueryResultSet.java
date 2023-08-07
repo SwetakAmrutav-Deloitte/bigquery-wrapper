@@ -11,7 +11,6 @@ import java.sql.Date;
 import java.sql.NClob;
 import java.sql.Ref;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.RowId;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
@@ -32,12 +31,12 @@ public class BigQueryResultSet implements ResultSet {
 	private final TableResult tableResult;
 	private int currentRow = -1;
 	private final Iterator<FieldValueList> rowList;
-	ArrayList<FieldValueList> arrayList = new ArrayList<>();
+	ArrayList<FieldValueList> arrayList = new ArrayList<FieldValueList>();
 	private final long totalRows;
 
 	public BigQueryResultSet(TableResult tableResult) {
 		this.tableResult = tableResult;
-		totalRows = tableResult.getTotalRows();
+		totalRows = tableResult.getTotalRows();		
 		rowList = tableResult.getValues().iterator();
 		while (rowList.hasNext()) {
 			arrayList.add(rowList.next());
@@ -253,9 +252,8 @@ public class BigQueryResultSet implements ResultSet {
 		return null;
 	}
 
-	public ResultSetMetaData getMetaData() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+	public BigQueryResultSetMetaData getMetaData() throws SQLException {
+		return new BigQueryResultSetMetaData(tableResult);
 	}
 
 	public Object getObject(int columnIndex) throws SQLException {
