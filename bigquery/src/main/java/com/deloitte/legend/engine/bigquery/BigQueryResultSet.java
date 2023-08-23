@@ -163,8 +163,11 @@ public class BigQueryResultSet implements ResultSet {
 	}
 
 	public boolean getBoolean(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
+		boolean columnValue = false;
+		if (columnLabel != null) {
+			columnValue = arrayList.get(currentRow).get(columnLabel).getBooleanValue();
+		}
+		return columnValue;
 	}
 
 	public byte getByte(String columnLabel) throws SQLException {
@@ -173,28 +176,43 @@ public class BigQueryResultSet implements ResultSet {
 	}
 
 	public short getShort(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		short columnValue = 0;
+		if (columnLabel != null) {
+			columnValue = (Short) arrayList.get(currentRow).get(columnLabel).getValue();
+		}
+		return columnValue;
 	}
 
 	public int getInt(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		int columnValue = 0;
+		if (columnLabel != null) {
+			columnValue = (Integer) arrayList.get(currentRow).get(columnLabel).getValue();
+		}
+		return columnValue;
 	}
 
 	public long getLong(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		long columnValue = 0;
+		if (columnLabel != null) {
+			columnValue = arrayList.get(currentRow).get(columnLabel).getLongValue();
+		}
+		return columnValue;
 	}
 
 	public float getFloat(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		float columnValue = 0;
+		if (columnLabel != null) {
+			columnValue = (Float) arrayList.get(currentRow).get(columnLabel).getValue();
+		}
+		return columnValue;
 	}
 
 	public double getDouble(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		double columnValue = 0;
+		if (columnLabel != null) {
+			columnValue = arrayList.get(currentRow).get(columnLabel).getDoubleValue();
+		}
+		return columnValue;
 	}
 
 	public BigDecimal getBigDecimal(String columnLabel, int scale) throws SQLException {

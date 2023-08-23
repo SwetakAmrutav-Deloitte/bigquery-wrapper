@@ -19,17 +19,28 @@ public class MainClass {
 			((BigQueryDataSource) dataSource).setDatasetId(DATASET_ID);
 			Connection connection = dataSource.getConnection();
 			Statement statement = connection.createStatement();
-			String sql = "SELECT * FROM crmsm-278014.testlegendEngine.game_post_wide limit 60";
+			//String sql = "SELECT * FROM crmsm-278014.testlegendEngine.game_post_wide limit 60";
+			String sql = "-- \"executionTraceID\" : \"437cd581-8ce1-42da-b923-1ac891bc6fc2\"\nselect abs(-1.011)";
 			ResultSet resultSet = statement.executeQuery(sql);
 			System.out.println("Column Count: " + resultSet.getMetaData().getColumnCount());
+			int columnCount = resultSet.getMetaData().getColumnCount();
+			for (int i = 1; i <= columnCount; i++)
+            {
+                String columnLabel = resultSet.getMetaData().getColumnLabel(i);
+                System.out.println("Column Level: " + columnLabel);
+                
+                int columnType = resultSet.getMetaData().getColumnType(i);
+                System.out.println("Column Type: " + columnType);
+                
+            }
 			
-			int index = 8; 
+			/*int index = 8; 
 			while (resultSet.next()) {
 				String value = resultSet.getString(index);
 				System.out.println("Value at index: " + index + " is: " + value);
 				String gameId = resultSet.getString("gameId"); 
 				System.out.println("gameId: " + gameId);
-			}
+			}*/
 
 			connection.close();
 		} catch (Exception e) {

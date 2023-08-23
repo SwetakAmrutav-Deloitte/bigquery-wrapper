@@ -2,15 +2,25 @@ package com.deloitte.legend.engine.bigquery;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Iterator;
 
+import com.google.cloud.bigquery.Field;
 import com.google.cloud.bigquery.TableResult;
 
 public class BigQueryResultSetMetaData implements ResultSetMetaData {
 
 	private final TableResult tableResult;
+	private final Iterator<Field> fieldList;
+	ArrayList<Field> arrayList = new ArrayList<Field>();
 	
 	public BigQueryResultSetMetaData(TableResult tableResult) {
 		this.tableResult = tableResult;
+		fieldList = tableResult.getSchema().getFields().iterator();
+		while (fieldList.hasNext()) {
+			arrayList.add(fieldList.next());
+		}
 	}
 
 	public <T> T unwrap(Class<T> iface) throws SQLException {
@@ -63,12 +73,22 @@ public class BigQueryResultSetMetaData implements ResultSetMetaData {
 	}
 
 	public String getColumnLabel(int column) throws SQLException {
-		// TODO Auto-generated method stub
+		int size = arrayList.size();
+		if (size ==1 && column == 1) {
+			return arrayList.get(0).getName();
+		} else if (size >= column) {
+			return arrayList.get(column).getName();
+		}
 		return null;
 	}
 
 	public String getColumnName(int column) throws SQLException {
-		// TODO Auto-generated method stub
+		int size = arrayList.size();
+		if (size ==1 && column == 1) {
+			return arrayList.get(0).getName();
+		} else if (size >= column) {
+			return arrayList.get(column).getName();
+		}
 		return null;
 	}
 
@@ -98,13 +118,44 @@ public class BigQueryResultSetMetaData implements ResultSetMetaData {
 	}
 
 	public int getColumnType(int column) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		String columnType = getColumnTypeName(column);
+		switch (columnType) {
+        case "STRING":
+            return Types.VARCHAR;
+        case "INT64":
+            return Types.BIGINT;
+        case "FLOAT64":
+            return Types.DOUBLE;
+        case "BOOLEAN":
+            return Types.BOOLEAN;
+        case "DATE":
+            return Types.DATE;
+        case "DATETIME":
+            return Types.TIMESTAMP;
+        case "NUMERIC":
+            return Types.NUMERIC;
+        case "JSON":
+            return Types.NVARCHAR;
+        case "ARRAY":
+            return Types.ARRAY;
+        case "FLOAT":
+            return Types.DOUBLE;
+        case "INTEGER":
+            return Types.BIGINT;
+        default:
+            throw new SQLException("Unsupported BigQuery type: " + columnType);
+		}
 	}
 
 	public String getColumnTypeName(int column) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		int size = arrayList.size();
+		String columnType = null;
+		if (size ==1 && column == 1) {
+			columnType = arrayList.get(0).getType().toString();
+		} else if (size >= column) {
+			return arrayList.get(column).getType().toString();
+		}
+		return columnType;
 	}
 
 	public boolean isReadOnly(int column) throws SQLException {

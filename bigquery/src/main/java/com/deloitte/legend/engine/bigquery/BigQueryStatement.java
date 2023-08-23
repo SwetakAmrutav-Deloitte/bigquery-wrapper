@@ -34,6 +34,7 @@ public class BigQueryStatement implements Statement {
 	}
 
 	public ResultSet executeQuery(String sql) throws SQLException {
+		System.out.println("SQL From Legends: " + sql);
 		QueryJobConfiguration queryConfig = QueryJobConfiguration.newBuilder(sql).setUseLegacySql(false).build();
 		JobId jobId = JobId.of(UUID.randomUUID().toString());
 		Job queryJob = bigQuery.create(JobInfo.newBuilder(queryConfig).setJobId(jobId).build());
