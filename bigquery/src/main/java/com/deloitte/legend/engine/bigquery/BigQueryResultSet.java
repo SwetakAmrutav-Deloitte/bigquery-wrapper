@@ -137,7 +137,11 @@ public class BigQueryResultSet implements ResultSet {
 		float columnValue = 0;
 		System.out.println("Method: getFloat");
 		if (columnIndex <= columnCount) {
-			columnValue = (float) arrayList.get(currentRow).get(columnIndex - 1).getDoubleValue();
+			String floatValue = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			System.out.println(floatValue);
+			BigDecimal bigDecimalValue = new BigDecimal(floatValue);
+			System.out.println(bigDecimalValue);
+			columnValue = Float.valueOf(floatValue);
 		}
 		return columnValue;
 	}
@@ -155,7 +159,8 @@ public class BigQueryResultSet implements ResultSet {
 		BigDecimal columnValue = null;
 		System.out.println("Method: getBigDecimal");
 		if (columnIndex <= columnCount) {
-			columnValue = (BigDecimal) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+			String floatValue = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			columnValue = new BigDecimal(floatValue);
 		}
 		return columnValue;
 	}
@@ -359,7 +364,7 @@ public class BigQueryResultSet implements ResultSet {
 			return getDate(columnIndex);
 		}
 		case Types.FLOAT: {
-			return getFloat(columnIndex);
+			return getBigDecimal(columnIndex);
 		}
 		case Types.BOOLEAN: {
 			return getBoolean(columnIndex);
@@ -394,8 +399,13 @@ public class BigQueryResultSet implements ResultSet {
 	}
 
 	public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		BigDecimal columnValue = null;
+		System.out.println("Method: getBigDecimal");
+		if (columnIndex <= columnCount) {
+			String floatValue = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			columnValue = new BigDecimal(floatValue);
+		}
+		return columnValue;
 	}
 
 	public BigDecimal getBigDecimal(String columnLabel) throws SQLException {

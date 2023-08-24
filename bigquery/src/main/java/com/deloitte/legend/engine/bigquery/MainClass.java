@@ -20,7 +20,9 @@ public class MainClass {
 			Connection connection = dataSource.getConnection();
 			Statement statement = connection.createStatement();
 			//String sql = "SELECT * FROM crmsm-278014.testlegendEngine.game_post_wide limit 60";
-			String sql = "-- \"executionTraceID\" : \"437cd581-8ce1-42da-b923-1ac891bc6fc2\"\nselect abs(-1.011)";
+			//String sql = "-- \"executionTraceID\" : \"437cd581-8ce1-42da-b923-1ac891bc6fc2\"\nselect abs(-1.011)";
+			//String sql = "-- \"executionTraceID\" : \"5f6c2ffd-ea41-4eb2-8cb7-2dfcaeeb7525\"\nselect tan(1.8)";
+			String sql = "-- \"executionTraceID\" : \"5c42595f-9eb5-4494-93a3-c0468836b663\"\nselect date_add(PARSE_DATE('%Y-%m-%d', '2014-11-30'), INTERVAL 1 DAY)";
 			ResultSet resultSet = statement.executeQuery(sql);
 			System.out.println("Column Count: " + resultSet.getMetaData().getColumnCount());
 			int columnCount = resultSet.getMetaData().getColumnCount();

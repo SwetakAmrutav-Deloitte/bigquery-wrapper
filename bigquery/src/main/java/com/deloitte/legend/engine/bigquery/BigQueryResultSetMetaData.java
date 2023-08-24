@@ -142,6 +142,8 @@ public class BigQueryResultSetMetaData implements ResultSetMetaData {
             return Types.FLOAT;
         case "INTEGER":
             return Types.INTEGER;
+        case "DECIMAL":
+            return Types.DECIMAL;
         default:
             throw new SQLException("Unsupported BigQuery type: " + columnType);
 		}
