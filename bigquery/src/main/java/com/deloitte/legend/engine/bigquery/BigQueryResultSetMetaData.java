@@ -139,9 +139,9 @@ public class BigQueryResultSetMetaData implements ResultSetMetaData {
         case "ARRAY":
             return Types.ARRAY;
         case "FLOAT":
-            return Types.DOUBLE;
+            return Types.FLOAT;
         case "INTEGER":
-            return Types.BIGINT;
+            return Types.INTEGER;
         default:
             throw new SQLException("Unsupported BigQuery type: " + columnType);
 		}

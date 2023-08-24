@@ -18,6 +18,7 @@ import java.sql.SQLXML;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -33,10 +34,12 @@ public class BigQueryResultSet implements ResultSet {
 	private final Iterator<FieldValueList> rowList;
 	ArrayList<FieldValueList> arrayList = new ArrayList<FieldValueList>();
 	private final long totalRows;
+	private final int columnCount;
 
-	public BigQueryResultSet(TableResult tableResult) {
+	public BigQueryResultSet(TableResult tableResult) throws SQLException {
 		this.tableResult = tableResult;
-		totalRows = tableResult.getTotalRows();		
+		totalRows = tableResult.getTotalRows();
+		columnCount = getMetaData().getColumnCount();
 		rowList = tableResult.getValues().iterator();
 		while (rowList.hasNext()) {
 			arrayList.add(rowList.next());
@@ -73,85 +76,154 @@ public class BigQueryResultSet implements ResultSet {
 
 	public String getString(int columnIndex) throws SQLException {
 		String columnValue = null;
-		if (columnIndex < totalRows) {
-			columnValue = arrayList.get(currentRow).get(columnIndex).getStringValue();
+		System.out.println("Method: getString");
+		if (columnIndex <= columnCount) {
+			columnValue = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
 		}
+
 		return columnValue;
 	}
 
 	public boolean getBoolean(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
+		boolean columnValue = false;
+		System.out.println("Method: getBoolean");
+
+		if (columnIndex <= columnCount) {
+			columnValue = arrayList.get(currentRow).get(columnIndex - 1).getBooleanValue();
+		}
+
+		return columnValue;
 	}
 
 	public byte getByte(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		byte columnValue = 0;
+		System.out.println("Method: getByte");
+		if (columnIndex <= columnCount) {
+			columnValue = (byte) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+		}
+		return columnValue;
 	}
 
 	public short getShort(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		short columnValue = 0;
+		System.out.println("Method: getShort");
+		if (columnIndex <= columnCount) {
+			columnValue = (short) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+		}
+		return columnValue;
 	}
 
 	public int getInt(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		int columnValue = 0;
+		System.out.println("Method: getInt");
+		if (columnIndex <= columnCount) {
+			columnValue = (int) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+		}
+		return columnValue;
 	}
 
 	public long getLong(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		long columnValue = 0;
+		System.out.println("Method: getLong");
+
+		if (columnIndex <= columnCount) {
+			columnValue = arrayList.get(currentRow).get(columnIndex - 1).getLongValue();
+		}
+
+		return columnValue;
 	}
 
 	public float getFloat(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		float columnValue = 0;
+		System.out.println("Method: getFloat");
+		if (columnIndex <= columnCount) {
+			columnValue = (float) arrayList.get(currentRow).get(columnIndex - 1).getDoubleValue();
+		}
+		return columnValue;
 	}
 
 	public double getDouble(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
+		double columnValue = 0;
+		System.out.println("Method: getDouble");
+		if (columnIndex <= columnCount) {
+			columnValue = arrayList.get(currentRow).get(columnIndex - 1).getDoubleValue();
+		}
+		return columnValue;
 	}
 
 	public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		BigDecimal columnValue = null;
+		System.out.println("Method: getBigDecimal");
+		if (columnIndex <= columnCount) {
+			columnValue = (BigDecimal) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+		}
+		return columnValue;
 	}
 
 	public byte[] getBytes(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		byte[] columnValue = null;
+		System.out.println("Method: getBytes");
+		if (columnIndex <= columnCount) {
+			columnValue = arrayList.get(currentRow).get(columnIndex - 1).getBytesValue();
+		}
+		return columnValue;
 	}
 
 	public Date getDate(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Date columnValue = null;
+		System.out.println("Method: getDate");
+
+		if (columnIndex <= columnCount) {
+			String dateStr = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			columnValue = Date.valueOf(dateStr);
+		}
+
+		return columnValue;
 	}
 
 	public Time getTime(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Time columnValue = null;
+		System.out.println("Method: getTime");
+		if (columnIndex <= columnCount) {
+			columnValue = (Time) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+		}
+		return columnValue;
 	}
 
 	public Timestamp getTimestamp(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Timestamp columnValue = null;
+		System.out.println("Method: getTimestamp");
+		if (columnIndex <= columnCount) {
+			columnValue = (Timestamp) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+		}
+		return columnValue;
 	}
 
 	public InputStream getAsciiStream(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		InputStream columnValue = null;
+		System.out.println("Method: getAsciiStream");
+		if (columnIndex <= columnCount) {
+			columnValue = (InputStream) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+		}
+		return columnValue;
 	}
 
 	public InputStream getUnicodeStream(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		InputStream columnValue = null;
+		System.out.println("Method: getUnicodeStream");
+		if (columnIndex <= columnCount) {
+			columnValue = (InputStream) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+		}
+		return columnValue;
 	}
 
 	public InputStream getBinaryStream(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		InputStream columnValue = null;
+		System.out.println("Method: getBinaryStream");
+		if (columnIndex <= columnCount) {
+			columnValue = (InputStream) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+		}
+		return columnValue;
 	}
 
 	public String getString(String columnLabel) throws SQLException {
@@ -275,13 +347,35 @@ public class BigQueryResultSet implements ResultSet {
 	}
 
 	public Object getObject(int columnIndex) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Object columnValue = null;
+		System.out.println("Method: getObject");
+		int columnType = getMetaData().getColumnType(columnIndex);
+
+		switch (columnType) {
+		case Types.INTEGER: {
+			return getLong(columnIndex);
+		}
+		case Types.DATE: {
+			return getDate(columnIndex);
+		}
+		case Types.FLOAT: {
+			return getFloat(columnIndex);
+		}
+		case Types.BOOLEAN: {
+			return getBoolean(columnIndex);
+		}
+		default:
+			columnValue = arrayList.get(currentRow).get(columnIndex - 1).getValue();
+		}
+		return columnValue;
 	}
 
 	public Object getObject(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Object columnValue = null;
+		if (columnLabel != null) {
+			columnValue = arrayList.get(currentRow).get(columnLabel).getValue();
+		}
+		return columnValue;
 	}
 
 	public int findColumn(String columnLabel) throws SQLException {

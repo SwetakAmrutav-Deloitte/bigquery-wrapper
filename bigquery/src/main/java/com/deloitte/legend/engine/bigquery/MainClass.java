@@ -34,13 +34,15 @@ public class MainClass {
                 
             }
 			
-			/*int index = 8; 
+			int index = 1; 
 			while (resultSet.next()) {
-				String value = resultSet.getString(index);
+				/*String value = resultSet.getString(index);
 				System.out.println("Value at index: " + index + " is: " + value);
 				String gameId = resultSet.getString("gameId"); 
-				System.out.println("gameId: " + gameId);
-			}*/
+				System.out.println("gameId: " + gameId);*/
+				Object value = resultSet.getObject(index);
+				System.out.println(value);
+			}
 
 			connection.close();
 		} catch (Exception e) {
