@@ -19,6 +19,10 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -30,7 +34,7 @@ import com.google.cloud.bigquery.TableResult;
 public class BigQueryResultSet implements ResultSet {
 
 	private final TableResult tableResult;
-	private int currentRow = -1;
+	private int currentRow = 0;
 	private final Iterator<FieldValueList> rowList;
 	ArrayList<FieldValueList> arrayList = new ArrayList<FieldValueList>();
 	private final long totalRows;
@@ -57,8 +61,8 @@ public class BigQueryResultSet implements ResultSet {
 	}
 
 	public boolean next() throws SQLException {
-		currentRow++;
 		if (!arrayList.isEmpty() && currentRow < tableResult.getTotalRows()) {
+			currentRow++;
 			return true;
 		}
 		return false;
@@ -76,71 +80,91 @@ public class BigQueryResultSet implements ResultSet {
 
 	public String getString(int columnIndex) throws SQLException {
 		String columnValue = null;
-		System.out.println("Method: getString");
 		if (columnIndex <= columnCount) {
-			columnValue = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			if (currentRow == 0) {
+				columnValue = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			} else {
+				columnValue = arrayList.get(currentRow - 1).get(columnIndex - 1).getStringValue();
+			}
 		}
-
 		return columnValue;
 	}
 
 	public boolean getBoolean(int columnIndex) throws SQLException {
 		boolean columnValue = false;
-		System.out.println("Method: getBoolean");
-
 		if (columnIndex <= columnCount) {
-			columnValue = arrayList.get(currentRow).get(columnIndex - 1).getBooleanValue();
+			if (currentRow == 0) {
+				columnValue = arrayList.get(currentRow).get(columnIndex - 1).getBooleanValue();
+			} else {
+				columnValue = arrayList.get(currentRow - 1).get(columnIndex - 1).getBooleanValue();
+			}
 		}
-
 		return columnValue;
 	}
 
 	public byte getByte(int columnIndex) throws SQLException {
 		byte columnValue = 0;
-		System.out.println("Method: getByte");
+		String byteStr = null;
 		if (columnIndex <= columnCount) {
-			columnValue = (byte) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+			if (currentRow == 0) {
+				byteStr = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			} else {
+				byteStr = arrayList.get(currentRow - 1).get(columnIndex - 1).getStringValue();
+			}
+			columnValue = Byte.parseByte(byteStr);
 		}
 		return columnValue;
 	}
 
 	public short getShort(int columnIndex) throws SQLException {
 		short columnValue = 0;
-		System.out.println("Method: getShort");
+		String shortStr = null;
 		if (columnIndex <= columnCount) {
-			columnValue = (short) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+			if (currentRow == 0) {
+				shortStr = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			} else {
+				shortStr = arrayList.get(currentRow - 1).get(columnIndex - 1).getStringValue();
+			}
+			columnValue = Short.parseShort(shortStr);
 		}
 		return columnValue;
 	}
 
 	public int getInt(int columnIndex) throws SQLException {
 		int columnValue = 0;
-		System.out.println("Method: getInt");
+		String integerStr = null;
 		if (columnIndex <= columnCount) {
-			columnValue = (int) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+			if (currentRow == 0) {
+				integerStr = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			} else {
+				integerStr = arrayList.get(currentRow - 1).get(columnIndex - 1).getStringValue();
+			}
+			columnValue = Integer.parseInt(integerStr);
 		}
 		return columnValue;
 	}
 
 	public long getLong(int columnIndex) throws SQLException {
 		long columnValue = 0;
-		System.out.println("Method: getLong");
-
 		if (columnIndex <= columnCount) {
-			columnValue = arrayList.get(currentRow).get(columnIndex - 1).getLongValue();
+			if (currentRow == 0) {
+				columnValue = arrayList.get(currentRow).get(columnIndex - 1).getLongValue();
+			} else {
+				columnValue = arrayList.get(currentRow - 1).get(columnIndex - 1).getLongValue();
+			}
 		}
-
 		return columnValue;
 	}
 
 	public float getFloat(int columnIndex) throws SQLException {
 		float columnValue = 0;
-		System.out.println("Method: getFloat");
+		String floatValue = null;
 		if (columnIndex <= columnCount) {
-			String floatValue = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
-			System.out.println(floatValue);
-			BigDecimal bigDecimalValue = new BigDecimal(floatValue);
-			System.out.println(bigDecimalValue);
+			if (currentRow == 0) {
+				floatValue = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			} else {
+				floatValue = arrayList.get(currentRow - 1).get(columnIndex - 1).getStringValue();
+			}
 			columnValue = Float.valueOf(floatValue);
 		}
 		return columnValue;
@@ -148,18 +172,25 @@ public class BigQueryResultSet implements ResultSet {
 
 	public double getDouble(int columnIndex) throws SQLException {
 		double columnValue = 0;
-		System.out.println("Method: getDouble");
 		if (columnIndex <= columnCount) {
-			columnValue = arrayList.get(currentRow).get(columnIndex - 1).getDoubleValue();
+			if (currentRow == 0) {
+				columnValue = arrayList.get(currentRow).get(columnIndex - 1).getDoubleValue();
+			} else {
+				columnValue = arrayList.get(currentRow - 1).get(columnIndex - 1).getDoubleValue();
+			}
 		}
 		return columnValue;
 	}
 
 	public BigDecimal getBigDecimal(int columnIndex, int scale) throws SQLException {
 		BigDecimal columnValue = null;
-		System.out.println("Method: getBigDecimal");
+		String floatValue = null;
 		if (columnIndex <= columnCount) {
-			String floatValue = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			if (currentRow == 0) {
+				floatValue = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			} else {
+				floatValue = arrayList.get(currentRow - 1).get(columnIndex - 1).getStringValue();
+			}
 			columnValue = new BigDecimal(floatValue);
 		}
 		return columnValue;
@@ -176,11 +207,16 @@ public class BigQueryResultSet implements ResultSet {
 
 	public Date getDate(int columnIndex) throws SQLException {
 		Date columnValue = null;
+		String dateStr = null;
 		System.out.println("Method: getDate");
-
 		if (columnIndex <= columnCount) {
-			String dateStr = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			if (currentRow == 0) {
+				dateStr = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			} else {
+				dateStr = arrayList.get(currentRow - 1).get(columnIndex - 1).getStringValue();
+			}
 			columnValue = Date.valueOf(dateStr);
+			System.out.println(columnValue);
 		}
 
 		return columnValue;
@@ -188,25 +224,36 @@ public class BigQueryResultSet implements ResultSet {
 
 	public Time getTime(int columnIndex) throws SQLException {
 		Time columnValue = null;
+		String timesStr = null;
 		System.out.println("Method: getTime");
 		if (columnIndex <= columnCount) {
-			columnValue = (Time) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+			if (currentRow == 0) {
+				timesStr = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			} else {
+				timesStr = arrayList.get(currentRow - 1).get(columnIndex - 1).getStringValue();
+			}
+			columnValue = Time.valueOf(timesStr);
 		}
 		return columnValue;
 	}
 
 	public Timestamp getTimestamp(int columnIndex) throws SQLException {
 		Timestamp columnValue = null;
+		String timestampStr = null;
 		System.out.println("Method: getTimestamp");
 		if (columnIndex <= columnCount) {
-			columnValue = (Timestamp) arrayList.get(currentRow).get(columnIndex - 1).getValue();
+			if (currentRow == 0) {
+				timestampStr = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			} else {
+				timestampStr = arrayList.get(currentRow - 1).get(columnIndex - 1).getStringValue();
+			}
+			columnValue = Timestamp.valueOf(timestampStr);
 		}
 		return columnValue;
 	}
 
 	public InputStream getAsciiStream(int columnIndex) throws SQLException {
 		InputStream columnValue = null;
-		System.out.println("Method: getAsciiStream");
 		if (columnIndex <= columnCount) {
 			columnValue = (InputStream) arrayList.get(currentRow).get(columnIndex - 1).getValue();
 		}
@@ -215,7 +262,6 @@ public class BigQueryResultSet implements ResultSet {
 
 	public InputStream getUnicodeStream(int columnIndex) throws SQLException {
 		InputStream columnValue = null;
-		System.out.println("Method: getUnicodeStream");
 		if (columnIndex <= columnCount) {
 			columnValue = (InputStream) arrayList.get(currentRow).get(columnIndex - 1).getValue();
 		}
@@ -224,7 +270,6 @@ public class BigQueryResultSet implements ResultSet {
 
 	public InputStream getBinaryStream(int columnIndex) throws SQLException {
 		InputStream columnValue = null;
-		System.out.println("Method: getBinaryStream");
 		if (columnIndex <= columnCount) {
 			columnValue = (InputStream) arrayList.get(currentRow).get(columnIndex - 1).getValue();
 		}
@@ -234,7 +279,11 @@ public class BigQueryResultSet implements ResultSet {
 	public String getString(String columnLabel) throws SQLException {
 		String columnValue = null;
 		if (columnLabel != null) {
-			columnValue = arrayList.get(currentRow).get(columnLabel).getStringValue();
+			if (currentRow == 0) {
+				columnValue = arrayList.get(currentRow).get(columnLabel).getStringValue();
+			} else {
+				columnValue = arrayList.get(currentRow - 1).get(columnLabel).getStringValue();
+			}
 		}
 		return columnValue;
 	}
@@ -242,7 +291,7 @@ public class BigQueryResultSet implements ResultSet {
 	public boolean getBoolean(String columnLabel) throws SQLException {
 		boolean columnValue = false;
 		if (columnLabel != null) {
-			columnValue = arrayList.get(currentRow).get(columnLabel).getBooleanValue();
+			columnValue = arrayList.get(currentRow - 1).get(columnLabel).getBooleanValue();
 		}
 		return columnValue;
 	}
@@ -271,7 +320,7 @@ public class BigQueryResultSet implements ResultSet {
 	public long getLong(String columnLabel) throws SQLException {
 		long columnValue = 0;
 		if (columnLabel != null) {
-			columnValue = arrayList.get(currentRow).get(columnLabel).getLongValue();
+			columnValue = arrayList.get(currentRow - 1).get(columnLabel).getLongValue();
 		}
 		return columnValue;
 	}
@@ -303,18 +352,54 @@ public class BigQueryResultSet implements ResultSet {
 	}
 
 	public Date getDate(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println("Method: getDate: String");
+		Date columnValue = null;
+		String dateStr = null;
+		if (columnLabel != null) {
+			if (currentRow == 0) {
+				dateStr = arrayList.get(currentRow).get(columnLabel).getStringValue();
+			} else {
+				dateStr = arrayList.get(currentRow - 1).get(columnLabel).getStringValue();
+			}
+			
+			columnValue = Date.valueOf(dateStr);
+			System.out.println(columnValue);
+		}
+		return columnValue;
 	}
 
 	public Time getTime(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println("Method: getTime: String");
+		Time columnValue = null;
+		String timeStr = null;
+		if (columnLabel != null) {
+			if (currentRow == 0) {
+				timeStr = arrayList.get(currentRow).get(columnLabel).getStringValue();
+			} else {
+				timeStr = arrayList.get(currentRow - 1).get(columnLabel).getStringValue();
+			}
+			
+			columnValue = Time.valueOf(timeStr);
+			System.out.println(columnValue);
+		}
+		return columnValue;
 	}
 
 	public Timestamp getTimestamp(String columnLabel) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		System.out.println("Method: getTimestamp: String");
+		Timestamp columnValue = null;
+		String timestampStr = null;
+		if (columnLabel != null) {
+			if (currentRow == 0) {
+				timestampStr = arrayList.get(currentRow).get(columnLabel).getStringValue();
+			} else {
+				timestampStr = arrayList.get(currentRow - 1).get(columnLabel).getStringValue();
+			}
+			
+			columnValue = Timestamp.valueOf(timestampStr);
+			System.out.println(columnValue);
+		}
+		return columnValue;
 	}
 
 	public InputStream getAsciiStream(String columnLabel) throws SQLException {
@@ -369,8 +454,16 @@ public class BigQueryResultSet implements ResultSet {
 		case Types.BOOLEAN: {
 			return getBoolean(columnIndex);
 		}
+		case Types.TIMESTAMP: {
+			return getTimestamp(columnIndex);
+		}
 		default:
-			columnValue = arrayList.get(currentRow).get(columnIndex - 1).getValue();
+			if (currentRow == 0) {
+				columnValue = arrayList.get(currentRow).get(columnIndex - 1).getValue();
+			} else {
+				columnValue = arrayList.get(currentRow - 1).get(columnIndex - 1).getValue();
+			}
+			
 		}
 		return columnValue;
 	}
@@ -378,7 +471,12 @@ public class BigQueryResultSet implements ResultSet {
 	public Object getObject(String columnLabel) throws SQLException {
 		Object columnValue = null;
 		if (columnLabel != null) {
-			columnValue = arrayList.get(currentRow).get(columnLabel).getValue();
+			if (currentRow == 0) {
+				columnValue = arrayList.get(currentRow).get(columnLabel).getValue();
+			} else {
+				columnValue = arrayList.get(currentRow - 1).get(columnLabel).getValue();
+			}
+			
 		}
 		return columnValue;
 	}
@@ -401,8 +499,13 @@ public class BigQueryResultSet implements ResultSet {
 	public BigDecimal getBigDecimal(int columnIndex) throws SQLException {
 		BigDecimal columnValue = null;
 		System.out.println("Method: getBigDecimal");
+		String floatValue = null;
 		if (columnIndex <= columnCount) {
-			String floatValue = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			if (currentRow == 0) {
+				floatValue = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			} else {
+				floatValue = arrayList.get(currentRow - 1).get(columnIndex - 1).getStringValue();
+			}
 			columnValue = new BigDecimal(floatValue);
 		}
 		return columnValue;
@@ -819,8 +922,27 @@ public class BigQueryResultSet implements ResultSet {
 	}
 
 	public Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
+		Timestamp columnValue = null;
+		String timestampStr = null;
+		System.out.println("Method: getTimestamp");
+		if (columnIndex <= columnCount) {
+			if (currentRow == 0) {
+				timestampStr = arrayList.get(currentRow).get(columnIndex - 1).getStringValue();
+			} else {
+				timestampStr = arrayList.get(currentRow - 1).get(columnIndex - 1).getStringValue();
+			}
+			System.out.println(timestampStr);
+			try {
+				double epochTimeWithFraction = Double.parseDouble(timestampStr);
+                long epochTimeSeconds = (long) epochTimeWithFraction;
+                int nanoSeconds = (int) ((epochTimeWithFraction - epochTimeSeconds) * 1_000_000_000);
+                Instant instant = Instant.ofEpochSecond(epochTimeSeconds, nanoSeconds);
+                columnValue = Timestamp.from(instant);
+	        } catch (NumberFormatException e) {
+	            columnValue = Timestamp.valueOf(LocalDateTime.parse(timestampStr, DateTimeFormatter.ISO_DATE_TIME));
+	        }
+		}
+		return columnValue;
 	}
 
 	public Timestamp getTimestamp(String columnLabel, Calendar cal) throws SQLException {

@@ -74,9 +74,9 @@ public class BigQueryResultSetMetaData implements ResultSetMetaData {
 
 	public String getColumnLabel(int column) throws SQLException {
 		int size = arrayList.size();
-		if (size ==1 && column == 1) {
-			return arrayList.get(0).getName();
-		} else if (size >= column) {
+		if (size == column) {
+			return arrayList.get(column - 1).getName();
+		} else if (column < size) {
 			return arrayList.get(column).getName();
 		}
 		return null;
@@ -84,9 +84,9 @@ public class BigQueryResultSetMetaData implements ResultSetMetaData {
 
 	public String getColumnName(int column) throws SQLException {
 		int size = arrayList.size();
-		if (size ==1 && column == 1) {
-			return arrayList.get(0).getName();
-		} else if (size >= column) {
+		if (size == column) {
+			return arrayList.get(column - 1).getName();
+		} else if (column < size) {
 			return arrayList.get(column).getName();
 		}
 		return null;
@@ -131,7 +131,7 @@ public class BigQueryResultSetMetaData implements ResultSetMetaData {
         case "DATE":
             return Types.DATE;
         case "DATETIME":
-            return Types.TIMESTAMP;
+            return Types.DATE;
         case "NUMERIC":
             return Types.NUMERIC;
         case "JSON":
@@ -144,6 +144,8 @@ public class BigQueryResultSetMetaData implements ResultSetMetaData {
             return Types.INTEGER;
         case "DECIMAL":
             return Types.DECIMAL;
+        case "TIMESTAMP":
+            return Types.TIMESTAMP;
         default:
             throw new SQLException("Unsupported BigQuery type: " + columnType);
 		}
@@ -152,9 +154,9 @@ public class BigQueryResultSetMetaData implements ResultSetMetaData {
 	public String getColumnTypeName(int column) throws SQLException {
 		int size = arrayList.size();
 		String columnType = null;
-		if (size ==1 && column == 1) {
-			columnType = arrayList.get(0).getType().toString();
-		} else if (size >= column) {
+		if (size == column) {
+			columnType = arrayList.get(column - 1).getType().toString();
+		} else if (column < size) {
 			return arrayList.get(column).getType().toString();
 		}
 		return columnType;
