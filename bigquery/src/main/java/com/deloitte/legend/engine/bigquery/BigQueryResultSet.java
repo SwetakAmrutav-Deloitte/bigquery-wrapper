@@ -21,8 +21,10 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -933,13 +935,26 @@ public class BigQueryResultSet implements ResultSet {
 			}
 			System.out.println(timestampStr);
 			try {
+				 // First, try parsing as a double for epoch time
 				double epochTimeWithFraction = Double.parseDouble(timestampStr);
                 long epochTimeSeconds = (long) epochTimeWithFraction;
                 int nanoSeconds = (int) ((epochTimeWithFraction - epochTimeSeconds) * 1_000_000_000);
                 Instant instant = Instant.ofEpochSecond(epochTimeSeconds, nanoSeconds);
                 columnValue = Timestamp.from(instant);
 	        } catch (NumberFormatException e) {
-	            columnValue = Timestamp.valueOf(LocalDateTime.parse(timestampStr, DateTimeFormatter.ISO_DATE_TIME));
+	        	try {
+	                LocalDateTime dateTime = LocalDateTime.parse(timestampStr, DateTimeFormatter.ISO_DATE_TIME);
+	                columnValue = Timestamp.valueOf(dateTime);
+	            } catch (DateTimeParseException e2) {
+	                // If parsing as ISO date-time format fails, try parsing as ISO date
+	                try {
+	                    LocalDate date = LocalDate.parse(timestampStr, DateTimeFormatter.ISO_DATE);
+	                    columnValue = Timestamp.valueOf(date.atStartOfDay());
+	                } catch (DateTimeParseException e3) {
+	                    // Handle invalid input
+	                    System.out.println("Invalid date or date-time format: " + timestampStr);
+	                }
+	            }
 	        }
 		}
 		return columnValue;
