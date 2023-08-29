@@ -22,6 +22,7 @@ import java.sql.Types;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Calendar;
@@ -817,6 +818,7 @@ public class BigQueryResultSet implements ResultSet {
 	public Timestamp getTimestamp(int columnIndex, Calendar cal) throws SQLException {
 		Timestamp columnValue = null;
 		String timestampStr = null;
+		OffsetDateTime odt = OffsetDateTime.ofInstant(cal.toInstant(), cal.getTimeZone().toZoneId());
 		if (columnIndex <= columnCount) {
 			timestampStr = currentRow.get(columnIndex - 1).getStringValue();
 			try {
@@ -824,12 +826,12 @@ public class BigQueryResultSet implements ResultSet {
 				double epochTimeWithFraction = Double.parseDouble(timestampStr);
 				long epochTimeSeconds = (long) epochTimeWithFraction;
 				int nanoSeconds = (int) ((epochTimeWithFraction - epochTimeSeconds) * 1_000_000_000);
-				Instant instant = Instant.ofEpochSecond(epochTimeSeconds, nanoSeconds);
+				Instant instant = Instant.ofEpochSecond(epochTimeSeconds, nanoSeconds).atOffset(odt.getOffset()).toInstant();
 				columnValue = Timestamp.from(instant);
 			} catch (NumberFormatException e) {
 				try {
-					LocalDateTime dateTime = LocalDateTime.parse(timestampStr, DateTimeFormatter.ISO_DATE_TIME);
-					columnValue = Timestamp.valueOf(dateTime);
+					OffsetDateTime dateTime = LocalDateTime.parse(timestampStr, DateTimeFormatter.ISO_DATE_TIME).atOffset(odt.getOffset());
+					columnValue = Timestamp.from(dateTime.toInstant());
 				} catch (DateTimeParseException e2) {
 					// If parsing as ISO date-time format fails, try parsing as ISO date
 					try {
