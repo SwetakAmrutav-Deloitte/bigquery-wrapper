@@ -14,12 +14,14 @@ public class BigQueryResultSetMetaData implements ResultSetMetaData {
 	private final TableResult tableResult;
 	private final Iterator<Field> fieldList;
 	ArrayList<Field> arrayList = new ArrayList<Field>();
+	//private Field currentField;
 	
 	public BigQueryResultSetMetaData(TableResult tableResult) {
 		this.tableResult = tableResult;
 		fieldList = tableResult.getSchema().getFields().iterator();
 		while (fieldList.hasNext()) {
 			arrayList.add(fieldList.next());
+			//currentField = fieldList.next();
 		}
 	}
 
@@ -157,7 +159,7 @@ public class BigQueryResultSetMetaData implements ResultSetMetaData {
 		if (size == column) {
 			columnType = arrayList.get(column - 1).getType().toString();
 		} else if (column < size) {
-			return arrayList.get(column).getType().toString();
+			columnType = arrayList.get(column).getType().toString();
 		}
 		return columnType;
 	}

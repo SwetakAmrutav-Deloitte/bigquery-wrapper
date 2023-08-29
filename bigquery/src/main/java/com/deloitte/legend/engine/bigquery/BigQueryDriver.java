@@ -77,12 +77,7 @@ public class BigQueryDriver implements Driver {
 			} catch (Exception e) {
 				System.out.println("Invalid URL: " + e.getMessage());
 			}
-
-			System.out.println("Project ID from Properties: " + projectId);
-			System.out.println("Dataset ID from Properties: " + datasetId);
 			
-			//info.forEach((key, val) -> System.out.println(key + " = " + val));
-
 			return new BigQueryConnection(projectId, datasetId);
 		}
 		return new BigQueryConnection(projectId, datasetId);
