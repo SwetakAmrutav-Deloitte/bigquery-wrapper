@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020 Google LLC
+ */
+
 package com.deloitte.legend.engine.bigquery;
 
 import java.sql.Connection;
@@ -8,105 +12,106 @@ import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class BigQueryDriver implements Driver {
-	
-	static {
-		try {
-			register();
-		} catch (SQLException e) {
-			java.sql.DriverManager.println("Registering driver failed: " + e.getMessage());
-		}
-	}
-	
-	private static final String BIGQUERY_URI_FORMAT = "jdbc:bigquery:(?<HOSTGROUP>https?://[\\w.-]+(?:\\.[\\w.-]+)*(:\\d+)?(?:/.*)?);ProjectId=(?<ProjectId>[a-zA-Z0-9-]+);DefaultDataset=(?<DefaultDataset>[a-zA-Z0-9]+)(?:;.*)?";
-	private static final Pattern URL_PATTERN = Pattern.compile(BIGQUERY_URI_FORMAT);
+public class BigQueryDriver implements Driver 
+{
+    
+    static 
+    {
+        try 
+        {
+            register();
+        } 
+        catch (SQLException e) 
+        {
+            throw new IllegalStateException("Registering driver failed: " + e.getMessage());
+        }
+    }
 
-	private static BigQueryDriver registeredDriver;
+    private static BigQueryDriver registeredDriver;
 
-	static void register() throws SQLException {
-		if (isRegistered()) {
-			throw new IllegalStateException("Driver is already registered. It can only be registered once.");
-		}
-		BigQueryDriver registeredDriver = new BigQueryDriver();
-		DriverManager.registerDriver(registeredDriver);
-		BigQueryDriver.registeredDriver = registeredDriver;
-	}
+    static void register() throws SQLException 
+    {
+        if (isRegistered()) 
+        {
+            throw new IllegalStateException("Driver is already registered. It can only be registered once.");
+        }
+        BigQueryDriver registeredDriver = new BigQueryDriver();
+        DriverManager.registerDriver(registeredDriver);
+        BigQueryDriver.registeredDriver = registeredDriver;
+    }
 
-	static boolean isRegistered() {
-		return registeredDriver != null;
-	}
+    static boolean isRegistered() 
+    {
+        return registeredDriver != null;
+    }
 
-	static BigQueryDriver getRegisteredDriver() throws SQLException {
-		if (isRegistered()) {
-			return registeredDriver;
-		}
-		throw new SQLException("The driver has not been registered");
-	}
+    static BigQueryDriver getRegisteredDriver() throws SQLException 
+    {
+        if (isRegistered()) 
+        {
+            return registeredDriver;
+        }
+        throw new SQLException("The driver has not been registered");
+    }
 
-	private String projectId;
-	private String datasetId;
+    private String projectId;
+    private String datasetId;
 
-	public String getProjectId() {
-		return projectId;
-	}
+    public String getProjectId() 
+    {
+        return projectId;
+    }
 
-	public void setProjectId(String projectId) {
-		this.projectId = projectId;
-	}
+    public void setProjectId(String projectId) 
+    {
+        this.projectId = projectId;
+    }
 
-	public String getDatasetId() {
-		return datasetId;
-	}
+    public String getDatasetId() 
+    {
+        return datasetId;
+    }
 
-	public BigQueryDriver() {
-	}
+    public BigQueryDriver() 
+    {
+    }
 
-	public Connection connect(String url, Properties info) throws SQLException {
-		String projectId = info.getProperty("bigquery_projectId");
-		String datasetId = info.getProperty("bigquery_defaultDataset");
-		if (url != null && url.startsWith("jdbc:bigquery")) {
-			try {
-				Matcher matcher = URL_PATTERN.matcher(url);
-				if (matcher.matches()) {
-					// Connection connection = new BigQueryConnection(projectId, datasetId);
-					System.out.println("Matching URL");
-				}
-			} catch (Exception e) {
-				System.out.println("Invalid URL: " + e.getMessage());
-			}
-			
-			return new BigQueryConnection(projectId, datasetId);
-		}
-		return new BigQueryConnection(projectId, datasetId);
-	}
+    public Connection connect(String url, Properties info) throws SQLException 
+    {
+        String projectId = info.getProperty("bigquery_projectId");
+        String datasetId = info.getProperty("bigquery_defaultDataset");
+        return new BigQueryConnection(projectId, datasetId);
+    }
 
-	public boolean acceptsURL(String url) throws SQLException {
-		//return URL_PATTERN.matcher(url).matches();
-		return true;
-	}
+    public boolean acceptsURL(String url) throws SQLException 
+    {
+        return true;
+    }
 
-	public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public DriverPropertyInfo[] getPropertyInfo(String url, Properties info) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
 
-	public int getMajorVersion() {
-		return 0;
-	}
+    public int getMajorVersion() 
+    {
+        return 0;
+    }
 
-	public int getMinorVersion() {
-		return 0;
-	}
+    public int getMinorVersion() 
+    {
+        return 0;
+    }
 
-	public boolean jdbcCompliant() {
-		return false;
-	}
+    public boolean jdbcCompliant() 
+    {
+        return false;
+    }
 
-	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-		throw new SQLFeatureNotSupportedException();
-	}
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException 
+    {
+        throw new SQLFeatureNotSupportedException();
+    }
 
 }

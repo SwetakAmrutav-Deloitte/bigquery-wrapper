@@ -1,10 +1,9 @@
-/**
- * 
+/*
+ * Copyright 2020 Google LLC
  */
+
 package com.deloitte.legend.engine.bigquery;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -23,314 +22,332 @@ import java.sql.Struct;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
-
+import java.util.logging.Logger;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.bigquery.BigQuery;
 import com.google.cloud.bigquery.BigQueryOptions;
 import com.google.cloud.bigquery.Dataset;
 
-/**
- * @author swmohapatra
- *
- */
-public class BigQueryConnection implements Connection {
-
-	public static final String GOOGLE_APPLICATION_CREDENTIALS = "GOOGLE_APPLICATION_CREDENTIALS";
-	private final BigQuery bigQuery;
-	
-	public BigQueryConnection(String projectId, String datasetId) {
-		String googleApplicationCredentials = System.getenv(GOOGLE_APPLICATION_CREDENTIALS);
-		File credentialsPath = new File(googleApplicationCredentials);
-		GoogleCredentials credentials = null;
-		try {
-			FileInputStream serviceAccountStream = new FileInputStream(credentialsPath);
-			credentials = ServiceAccountCredentials.fromStream(serviceAccountStream);
-		} catch (Exception e) {
-			System.out.println("Exception: " + e.getMessage());
-		}
-		bigQuery = BigQueryOptions.newBuilder().setProjectId(projectId).setCredentials(credentials).build().getService();
-		
-		Dataset dataset = bigQuery.getDataset(datasetId);
-		if (dataset == null) {
-			System.out.println("Dataset not found.");
-			return;
-		} else {
-			System.out.println("Connected to Dataset: " + datasetId);
-		}
-	}
-	
-	public <T> T unwrap(Class<T> iface) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public Statement createStatement() throws SQLException {
-		return new BigQueryStatement(bigQuery);
-	}
-
-	public PreparedStatement prepareStatement(String sql) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public CallableStatement prepareCall(String sql) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String nativeSQL(String sql) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setAutoCommit(boolean autoCommit) throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public boolean getAutoCommit() throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public void commit() throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void rollback() throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void close() throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public boolean isClosed() throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public DatabaseMetaData getMetaData() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setReadOnly(boolean readOnly) throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public boolean isReadOnly() throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
-	}
+public class BigQueryConnection implements Connection 
+{
+
+    private final BigQuery bigQuery;
+    Logger logger = Logger.getLogger(BigQueryConnection.class.getName());
+    
+    public BigQueryConnection(String projectId, String datasetId) 
+    {
+        GoogleCredentials credentials = null;
+        try 
+        {
+            credentials = GoogleCredentials.getApplicationDefault();
+        } 
+        catch (Exception e) 
+        {
+            throw new RuntimeException(e);
+        }
+        bigQuery = BigQueryOptions.newBuilder().setProjectId(projectId).setCredentials(credentials).build().getService();
+        
+        
+        Dataset dataset = bigQuery.getDataset(datasetId);
+        if (dataset == null) 
+        {
+            throw new RuntimeException("Dataset Not Found");
+        } 
+        else 
+        {
+            logger.info("Connected to Dataset: " + datasetId);
+        }
+    }
+    
+    public <T> T unwrap(Class<T> iface) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public boolean isWrapperFor(Class<?> iface) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public Statement createStatement() throws SQLException 
+    {
+        return new BigQueryStatement(bigQuery);
+    }
+
+    public PreparedStatement prepareStatement(String sql) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public CallableStatement prepareCall(String sql) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public String nativeSQL(String sql) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public void setAutoCommit(boolean autoCommit) throws SQLException 
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public boolean getAutoCommit() throws SQLException 
+    {
+        return false;
+    }
+
+    public void commit() throws SQLException 
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void rollback() throws SQLException 
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void close() throws SQLException 
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    public boolean isClosed() throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public DatabaseMetaData getMetaData() throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public void setReadOnly(boolean readOnly) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
 
-	public void setCatalog(String catalog) throws SQLException {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    public boolean isReadOnly() throws SQLException 
+    {
+        return false;
+    }
 
-	public String getCatalog() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public void setCatalog(String catalog) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+
+    }
 
-	public void setTransactionIsolation(int level) throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public int getTransactionIsolation() throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public SQLWarning getWarnings() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void clearWarnings() throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
-			throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Map<String, Class<?>> getTypeMap() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void setHoldability(int holdability) throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public int getHoldability() throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public Savepoint setSavepoint() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Savepoint setSavepoint(String name) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void rollback(Savepoint savepoint) throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void releaseSavepoint(Savepoint savepoint) throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
-			throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
-			int resultSetHoldability) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,
-			int resultSetHoldability) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Clob createClob() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Blob createBlob() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public NClob createNClob() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public SQLXML createSQLXML() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public boolean isValid(int timeout) throws SQLException {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public void setClientInfo(String name, String value) throws SQLClientInfoException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void setClientInfo(Properties properties) throws SQLClientInfoException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public String getClientInfo(String name) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Properties getClientInfo() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Array createArrayOf(String typeName, Object[] elements) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Struct createStruct(String typeName, Object[] attributes) throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void setSchema(String schema) throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public String getSchema() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void abort(Executor executor) throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException {
-		// TODO Auto-generated method stub
-
-	}
-
-	public int getNetworkTimeout() throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    public String getCatalog() throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public void setTransactionIsolation(int level) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+
+    }
+
+    public int getTransactionIsolation() throws SQLException 
+    {
+        return 0;
+    }
+
+    public SQLWarning getWarnings() throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public void clearWarnings() throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+
+    }
+
+    public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
+            throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public Map<String, Class<?>> getTypeMap() throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public void setTypeMap(Map<String, Class<?>> map) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+
+    }
+
+    public void setHoldability(int holdability) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+
+    }
+
+    public int getHoldability() throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public Savepoint setSavepoint() throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public Savepoint setSavepoint(String name) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public void rollback(Savepoint savepoint) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+
+    }
+
+    public void releaseSavepoint(Savepoint savepoint) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+
+    }
+
+    public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability)
+            throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency,
+            int resultSetHoldability) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency,
+            int resultSetHoldability) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public PreparedStatement prepareStatement(String sql, int autoGeneratedKeys) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public PreparedStatement prepareStatement(String sql, int[] columnIndexes) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public PreparedStatement prepareStatement(String sql, String[] columnNames) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public Clob createClob() throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public Blob createBlob() throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public NClob createNClob() throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public SQLXML createSQLXML() throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public boolean isValid(int timeout) throws SQLException 
+    {
+        return false;
+    }
+
+    public void setClientInfo(String name, String value) throws SQLClientInfoException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+
+    }
+
+    public void setClientInfo(Properties properties) throws SQLClientInfoException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+
+    }
+
+    public String getClientInfo(String name) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public Properties getClientInfo() throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public Array createArrayOf(String typeName, Object[] elements) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public Struct createStruct(String typeName, Object[] attributes) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public void setSchema(String schema) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+
+    }
+
+    public String getSchema() throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+    }
+
+    public void abort(Executor executor) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+
+    }
+
+    public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException 
+    {
+        throw new UnsupportedOperationException("Not Implemented");
+
+    }
+
+    public int getNetworkTimeout() throws SQLException 
+    {
+        return 0;
+    }
 
 }
