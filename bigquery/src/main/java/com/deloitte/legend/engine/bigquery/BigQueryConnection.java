@@ -168,7 +168,7 @@ public class BigQueryConnection implements Connection
 
     public void clearWarnings() throws SQLException 
     {
-        throw new UnsupportedOperationException("Not Implemented");
+        // TODO Auto-generated method stub
 
     }
 

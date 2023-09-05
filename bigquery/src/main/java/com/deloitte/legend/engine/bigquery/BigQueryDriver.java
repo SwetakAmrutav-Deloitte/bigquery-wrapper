@@ -55,24 +55,6 @@ public class BigQueryDriver implements Driver
         throw new SQLException("The driver has not been registered");
     }
 
-    private String projectId;
-    private String datasetId;
-
-    public String getProjectId() 
-    {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) 
-    {
-        this.projectId = projectId;
-    }
-
-    public String getDatasetId() 
-    {
-        return datasetId;
-    }
-
     public BigQueryDriver() 
     {
     }

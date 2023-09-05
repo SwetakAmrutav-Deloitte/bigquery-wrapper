@@ -27,29 +27,6 @@ public class BigQueryDataSource implements DataSource
         }
     }
 
-    private String projectId;
-    private String datasetId;
-
-    public String getProjectId() 
-    {
-        return projectId;
-    }
-
-    public void setProjectId(String projectId) 
-    {
-        this.projectId = projectId;
-    }
-
-    public String getDatasetId() 
-    {
-        return datasetId;
-    }
-
-    public void setDatasetId(String datasetId) 
-    {
-        this.datasetId = datasetId;
-    }
-
     public Logger getParentLogger() throws SQLFeatureNotSupportedException 
     {
         throw new SQLFeatureNotSupportedException();
@@ -67,12 +44,12 @@ public class BigQueryDataSource implements DataSource
 
     public Connection getConnection() throws SQLException 
     {
-        return new BigQueryConnection(projectId, datasetId);
+        throw new UnsupportedOperationException("Not Implemented");
     }
 
     public Connection getConnection(String username, String password) throws SQLException 
     {
-        return getConnection();
+        throw new UnsupportedOperationException("Not Implemented");
     }
 
     public PrintWriter getLogWriter() throws SQLException 
